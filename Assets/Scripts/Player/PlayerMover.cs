@@ -25,6 +25,31 @@ public class PlayerMover : MonoBehaviour
 
     public bool IsGrounded => _isGrounded;
 
+    public void AnimationRun()
+    {
+        Move();
+        _animator.SetFloat(Speed, _maxMovingValue);
+    }
+
+    public void AnimationJump()
+    {
+        if (_isGrounded)
+        {
+            _animator.SetTrigger(JumpOne);
+            Jump();
+        }
+    }
+
+    public void AnimationIdle()
+    {
+        _animator.SetFloat(Speed, _minMovingValue);
+    }
+
+    public void AnimationAttack()
+    {
+        _animator.SetTrigger(Attack);
+    }
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -43,7 +68,7 @@ public class PlayerMover : MonoBehaviour
         _isGrounded = colliders.Length > 1;
     }
 
-    public void Move()
+    private void Move()
     {
         _direction.x = Input.GetAxis(Horizontal);
         _rigidbody.velocity = new Vector2(_direction.x * _currentSpeed, _rigidbody.velocity.y);
@@ -53,26 +78,6 @@ public class PlayerMover : MonoBehaviour
     private void Jump()
     {
         _rigidbody.AddForce(transform.up * _jumpHeight, ForceMode2D.Impulse);
-    }
-
-    public void AnimationRun()
-    {
-        Move();
-        _animator.SetFloat(Speed, _maxMovingValue);
-    }
-
-    public void AnimationIdle()
-    {
-        _animator.SetFloat(Speed, _minMovingValue);
-    }
-
-    public void AnimationJump()
-    {
-        if (_isGrounded)
-        {
-            _animator.SetTrigger(JumpOne);
-            Jump();
-        }
     }
 
     private void FLip()
@@ -85,10 +90,5 @@ public class PlayerMover : MonoBehaviour
         {
             _spriteRenderer.flipX = false;
         }
-    }
-
-    public void AnimationAttack()
-    {
-        _animator.SetTrigger(Attack);
     }
 }

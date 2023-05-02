@@ -1,54 +1,68 @@
-using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Enemy))]
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] private Transform _startPoints;
-    [SerializeField] private Transform _endPoints;
-    [SerializeField] private float _speedMove = 2f;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
+    public const string Move = "Move";
 
-    private bool _moveLeft = true;
-    //[SerializeField] private Rigidbody2D _rigidbody;
+    [SerializeField] private Transform _pathTarget;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Animator _animator;
+
+    private Transform[] _points;
+    private int _currentPointIndex;
+    private float _speed = 2f;
+    private bool _isMoving = false;
+
     private void Start()
     {
-        //_rigidbody = GetComponent<Rigidbody2D>();
-        //StartCoroutine(MovingAndWait());
+        _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        gameObject.transform.position = new Vector3(_startPoints.position.x, _startPoints.position.y, _startPoints.position.z);
+
+        InitPoints();
     }
 
     private void Update()
     {
-        Move();
+        MoveToPoints();
+        WalkAnimation();
     }
 
-    private void Move()
+    private void MoveToPoints()
     {
-        transform.position = Vector3.MoveTowards(transform.position, _endPoints.position, _speedMove*Time.deltaTime);
+        Transform target = _points[_currentPointIndex];
+        transform.position = Vector3.MoveTowards(transform.position, target.position, _speed * Time.deltaTime);
+        _isMoving = true;
 
-        if (transform.position ==_endPoints.position)
+        if (transform.position == target.position)
         {
-            //transform.eulerAngles = new Vector3(0,180,0);
             _spriteRenderer.flipX = true;
-            Transform nextStep = _startPoints;
-            _startPoints = _endPoints;
-            _endPoints = nextStep;
-            // не работает поворот в другую сторону
+            _currentPointIndex++;
+
+            if (_currentPointIndex >= _points.Length)
+            {
+                _currentPointIndex = 0;
+                _spriteRenderer.flipX = false;
+            }
         }
     }
 
-    //private IEnumerator MovingAndWait()
-    //{
-    //    int iteration = 10;
+    private void InitPoints()
+    {
+        _points = new Transform[_pathTarget.childCount];
 
-    //    while (true)
-    //    {
-    //        transform.position = _points[0].position;
-    //        yield return new WaitForSeconds(5f);
-    //        transform.position = _points[1].position;
-    //        iteration--;
-    //    }
-    //}
+        for (int i = 0; i < _pathTarget.childCount; i++)
+        {
+            _points[i] = _pathTarget.GetChild(i);
+        }
+    }
+
+    private void WalkAnimation()
+    {
+        if (_isMoving)
+        {
+            _animator.SetBool(Move, true);
+        }
+    }
 }
