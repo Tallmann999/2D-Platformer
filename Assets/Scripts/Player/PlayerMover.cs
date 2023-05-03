@@ -33,10 +33,12 @@ public class PlayerMover : MonoBehaviour
 
     public void AnimationJump()
     {
-        if (_isGrounded)
+        if (IsGrounded)
         {
-            _animator.SetTrigger(JumpOne);
+            //_animator.SetTrigger(JumpOne);
+            _animator.SetBool(JumpOne,true);
             Jump();
+            
         }
     }
 

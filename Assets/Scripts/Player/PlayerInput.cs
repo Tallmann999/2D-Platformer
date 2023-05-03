@@ -22,7 +22,7 @@ public class PlayerInput : MonoBehaviour
 
     private void MoveControl()
     {
-        if (Input.GetAxis(Horizontal) == 0 && _playerMover.IsGrounded)
+        if (Input.GetAxis(Horizontal) == 0)
         {
             _playerMover.AnimationIdle();
         }
