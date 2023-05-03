@@ -18,28 +18,26 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] private Transform _groundCheck;
 
     private bool _isGrounded;
+    private bool _isMoving = false;
     private Vector2 _direction;
     private float _rayLength = 0.2f;
     private float _maxMovingValue = 1;
     private float _minMovingValue = 0;
 
     public bool IsGrounded => _isGrounded;
+    public bool IsMoving => _isMoving;
 
     public void AnimationRun()
     {
         Move();
+        _isMoving = true;
         _animator.SetFloat(Speed, _maxMovingValue);
     }
 
     public void AnimationJump()
     {
-        if (IsGrounded)
-        {
-            //_animator.SetTrigger(JumpOne);
-            _animator.SetBool(JumpOne,true);
+            _animator.SetTrigger(JumpOne);
             Jump();
-            
-        }
     }
 
     public void AnimationIdle()
@@ -79,7 +77,7 @@ public class PlayerMover : MonoBehaviour
 
     private void Jump()
     {
-        _rigidbody.AddForce(transform.up * _jumpHeight, ForceMode2D.Impulse);
+        _rigidbody.AddForce(Vector2.up * _jumpHeight, ForceMode2D.Impulse);
     }
 
     private void FLip()

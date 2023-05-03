@@ -2,10 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PlayerMover))]
 public class PlayerInput : MonoBehaviour
-{
-    public const string Horizontal = "Horizontal";
-    public const string Fire = "Fire1";
-
+{  
     private PlayerMover _playerMover;
 
     private void Start()
@@ -22,6 +19,8 @@ public class PlayerInput : MonoBehaviour
 
     private void MoveControl()
     {
+        const string Horizontal = "Horizontal";
+
         if (Input.GetAxis(Horizontal) == 0)
         {
             _playerMover.AnimationIdle();
@@ -34,7 +33,7 @@ public class PlayerInput : MonoBehaviour
 
     private void JumpControl()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && _playerMover.IsGrounded && _playerMover.IsMoving)
         {
             _playerMover.AnimationJump();
         }
@@ -42,6 +41,8 @@ public class PlayerInput : MonoBehaviour
 
     private void Attack()
     {
+        const string Fire = "Fire1";
+
         if (Input.GetButtonDown(Fire))
         {
             _playerMover.AnimationAttack();
